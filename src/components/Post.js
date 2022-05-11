@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '../utils/firebase.config';
 
-const Post = ({ post }) => {
+const Post = ({ post, user }) => {
+  const [edit, setEdit] = useState(false);
+  const [editMessage, setEditMessage] = useState(null);
   // dateFormateur formatera la data
   const dateFormater = (date) => {
 		// Math.floor arrondie la date à l'inferieur
@@ -20,18 +24,62 @@ const Post = ({ post }) => {
     }
 	};
 
+  const handleEdit = () => {
+		setEdit(false);
+		// EDIT
+
+		// updateDoc permet d'update la data
+		// db est le nom de la db que firebase doit aller chercher
+		// posts est le nom de la collection à choisir
+		// post.id est l'id du post à éditer
+		// message (valeur de la db) sera modifier avec la valeur de editMessage
+		// if (editMessage) = si editMessage contient quelque chose, alors l'edit se lancera
+		if (editMessage) {
+			updateDoc(doc(db, 'posts', post.id), { message: editMessage });
+		}
+	}
+
 	return (
 		<div className="post">
-      <div className="post-header">
-        <div className="left-part">
-          <div className="title">
-            <span>{post.author[0]}</span>
-            <h2>{post.author}</h2>
-          </div>
-          <h5>Posté {dateFormater(post.date)}</h5>
-        </div>
-      </div>
-    </div>
+			<div className="post-header">
+				<div className="left-part">
+					<div className="title">
+						<span>{post.author[0]}</span>
+						<h2>{post.author}</h2>
+					</div>
+					<h5>Posté {dateFormater(post.date)}</h5>
+				</div>
+				{/* Si l'id de l'autheur du post est égal à l'uid de l'utilisateur connecté alors la div s'affichera */}
+				{post.authorId === user?.uid && (
+					<div className="right-part">
+						{/* Quand le bouton editer sera cliquer, le state ira à l'inverse de ce qu'il est */}
+						{/* Ca permet de revenir au message quand la partie edit est affiché */}
+						<span onClick={() => setEdit(!edit)}>Editer</span>
+						<span>Supprimer</span>
+					</div>
+				)}
+				{/* Si edit est sur true, textearea s'affichera, sinon le message s'affichera */}
+				{edit ? (
+					<>
+						<textarea
+							autoFocus
+							// Si editMessage est sur null post.message s'affichera
+							// Si l'édition à commencer alors le message editer s'affichera
+							defaultValue={editMessage ? editMessage : post.message}
+							onChange={e => setEditMessage(e.target.value)}
+						></textarea>
+						{/* Au clique de la validation, la fonction handleEdit se lancera */}
+						<button className="edit-btn" onClick={() => handleEdit()}>
+							Modifier message
+						</button>
+					</>
+				) : (
+					// Si editMessage est sur null post.message s'affichera
+					// Si l'édition à commencer alors le message editer s'affichera
+					<p>{editMessage ? editMessage : post.message}</p>
+				)}
+			</div>
+		</div>
 	);
 };
 

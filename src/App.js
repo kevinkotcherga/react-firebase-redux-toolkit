@@ -52,16 +52,24 @@ function App() {
 					</div>
 				)}
 				{/* si user existe il affiche CreatePost, si non : page de connexion */}
-				{user ? <CreatePost uid={user.uid} displayName={user.displayName} /> : <ConnectModal />}
+				{user ? (
+					<CreatePost uid={user.uid} displayName={user.displayName} />
+				) : (
+					<ConnectModal />
+				)}
 			</div>
 			<div className="posts-container">
-          {/* Si il y a un élement dans posts, alors ils s'affichent */}
-        {posts.length > 0 &&
-          // map de posts pour envoyer la data à Post
-          posts.map((post) =>
-            <Post post={post} key={post.id} user={user} />
-        )}
-      </div>
+				{/* Si il y a un élement dans posts, alors ils s'affichent */}
+				{posts.length > 0 &&
+					posts
+            // trie de la date la plus grande(recente) à la plus petite(ancienne)
+            .sort((a,b) => b.date - a.date)
+						// map de posts pour envoyer la data à Post
+            // post est le tableau de data
+            // user est l'utilisateur connecté, il sert à verifier si l'autheur du post est connecté
+            // si oui il peux modifier ses messages
+						.map(post => <Post post={post} key={post.id} user={user} />)}
+			</div>
 		</div>
 	);
 };
