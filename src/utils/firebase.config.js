@@ -1,6 +1,7 @@
 // Import the functions you need from the SDKs you need
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
+import { getFirestore } from "@firebase/firestore";
 
 // Your web app's Firebase configuration
 const app = firebase.initializeApp({
@@ -14,4 +15,6 @@ const app = firebase.initializeApp({
 
 // Initialize Firebase
 export const auth = app.auth();
+// Dans la database firebase modifier la ligne (allow read, write: if false;) en (allow read, write: if true;)
+export const db = getFirestore();
 export default app;

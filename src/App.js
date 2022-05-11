@@ -37,7 +37,7 @@ function App() {
 					</div>
 				)}
 				{/* si user existe il affiche CreatePost, si non : page de connexion */}
-				{user ? <CreatePost /> : <ConnectModal />}
+				{user ? <CreatePost uid={user.uid} displayName={user.displayName} /> : <ConnectModal />}
 			</div>
 			<div className="posts-container"></div>
 		</div>
