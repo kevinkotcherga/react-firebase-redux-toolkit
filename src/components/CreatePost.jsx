@@ -16,6 +16,8 @@ const CreatePost = ({ uid, displayName }) => {
       comments: null,
       date: Date.now()
     }
+    // CREATE
+
     // Envoyer la data à firebase
     // db est le nom de la db que firebase doit aller chercher
     // posts est le nom de la collection à choisir
