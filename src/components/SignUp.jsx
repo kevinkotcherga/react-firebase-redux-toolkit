@@ -1,10 +1,11 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { auth } from '../utils/firebase.config';
 
 const SignUp = () => {
   // useRef() récupèrent les valeurs dans le formulaire
   const registerEmail = useRef();
   const registerPassword = useRef();
+  const [displayName, setDisplayName] = useState('');
 
   // handleRegister est la fonction qui s'envoie quand submit est cliqué
   const handleRegister = (e) => {
@@ -13,8 +14,13 @@ const SignUp = () => {
     try {
       // auth et createUserWithEmailAndPassword créent un utilisateur avec Firebase
       auth.createUserWithEmailAndPassword(registerEmail.current.value, registerPassword.current.value)
+      // then (la promesse) ne se déclenche qu'après l'éxecution de createUserWithEmailAndPassword
       // Ajout du pseudo dans la data, qui ne peut pas être fait précédement avec firebase
       .then(async (userAuth) => {
+        // userAuth sont les valeurs email et password récupérés à qui sont ajoutés displayName
+        await userAuth.user.updateProfile({
+          displayName
+        });
         console.log(userAuth);
       });
     // si try ne fonctionne pas, catch est effectué
@@ -31,7 +37,7 @@ const SignUp = () => {
         <div className="signup">
           <h3>S'inscrire</h3>
           <form onSubmit={e => handleRegister(e)}>
-            <input type="text" placeholder='Pseudo' required />
+            <input type="text" placeholder='Pseudo' required onChange={(e) => setDisplayName(e.target.value)}/>
             <input type="email" placeholder='Email' ref={registerEmail} required />
             <input type="password" placeholder='Mot de passe' ref={registerPassword} required/>
             <input type="submit" value="Valider l'inscription"/>
