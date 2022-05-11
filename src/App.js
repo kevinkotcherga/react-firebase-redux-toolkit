@@ -29,10 +29,10 @@ function App() {
 				{user && (
 					<div className="user-infos">
 						{/* span affiche la premiere lettre du prénom dans une bull d'ou le [0] */}
-						<span>{user.displayName[0]}</span>
+						<span>{user?.displayName[0]}</span>
 						{/* h4 affiche le prénom de l'utilisateur */}
 						{/* Les valeurs de user sont visibles dans la console */}
-						<h4>{user.displayName}</h4>
+						<h4>{user?.displayName}</h4>
 						<button onClick={() => handleLogout()}>Deconnéxion</button>
 					</div>
 				)}

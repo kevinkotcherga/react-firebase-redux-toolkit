@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState } from 'react';
 import { auth } from '../utils/firebase.config';
 
 const SignUp = () => {
@@ -22,6 +22,8 @@ const SignUp = () => {
           displayName
         });
         console.log(userAuth);
+        // window.location.reload rafraichit la page pour afficher la div de message
+        window.location.reload();
       });
     // si try ne fonctionne pas, catch est effectué
     } catch(error) {
