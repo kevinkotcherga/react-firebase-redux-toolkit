@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../utils/firebase.config';
+import Delete from './Delete';
 
 const Post = ({ post, user }) => {
   const [edit, setEdit] = useState(false);
@@ -55,7 +56,8 @@ const Post = ({ post, user }) => {
 						{/* Quand le bouton editer sera cliquer, le state ira à l'inverse de ce qu'il est */}
 						{/* Ca permet de revenir au message quand la partie edit est affiché */}
 						<span onClick={() => setEdit(!edit)}>Editer</span>
-						<span>Supprimer</span>
+            {/* l'id du post est récupéré pour être envoyé au composant delete pour supprimer le bon post */}
+            <Delete postId={post.id} />
 					</div>
 				)}
 				{/* Si edit est sur true, textearea s'affichera, sinon le message s'affichera */}

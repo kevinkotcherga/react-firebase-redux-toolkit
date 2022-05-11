@@ -24,7 +24,7 @@ const CreatePost = ({ uid, displayName }) => {
     // data est ce qui sera envoyé dans la db
     await addDoc(collection(db, "posts"), data);
     message.current.value = '';
-  }
+  };
 
   return (
     <div className="new-post-modal">
