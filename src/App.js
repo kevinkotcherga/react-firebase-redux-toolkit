@@ -28,7 +28,7 @@ function App() {
 			setPosts(res.docs.map(doc => ({ ...doc.data(), id: doc.id }))),
 		);
 	}, []);
-  console.log(posts);
+
 	// onAuthStateChanged est une méthode de firebase qui surveille chaque changement d'authentification
 	// onAuthStateChanged regarde dans auth si un utilisateur est présent
 	onAuthStateChanged(auth, currentUser => {
