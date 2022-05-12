@@ -5,12 +5,15 @@ import { auth, db } from './utils/firebase.config';
 import CreatePost from './components/CreatePost';
 import { collection, doc, getDocs } from 'firebase/firestore';
 import Post from './components/Post';
+import { useDispatch, useSelector } from 'react-redux';
+import { getPosts } from './feature/post.slice';
 
 function App() {
 	const [user, setUser] = useState(null);
-  const [posts, setPosts] = useState([]);
-
-
+	// useDispatch déclenche l'action, la logique du reducer
+	const dispatch = useDispatch();
+  // useSelector permet de récupérer la data qui est dans la store, envoyé depuis le dipatch
+  const posts = useSelector((state) => state.posts.posts);
 	// handleLogout est appelé au clique du button
 	const handleLogout = async () => {
 		// SignOut est une méthode de firebase qui permet la déconnexion
@@ -18,16 +21,16 @@ function App() {
 		await signOut(auth);
 	};
 
-  // GET MESSAGES
-  useEffect(() => {
+	// GET MESSAGES
+	useEffect(() => {
 		// getDocs permet de récupérer la données avec firebase
 		// db est le nom de la db que firebase doit aller récupérer
 		// posts est le nom de la collection à choisir
-    // docs.map est la façon de faire pour récuprer la doc facilement
+		// docs.map est la façon de faire pour récuprer la doc facilement
 		getDocs(collection(db, 'posts')).then(res =>
-			setPosts(res.docs.map(doc => ({ ...doc.data(), id: doc.id }))),
+			dispatch(getPosts(res.docs.map(doc => ({ ...doc.data(), id: doc.id })))),
 		);
-	}, []);
+	}, [dispatch]);
 
 	// onAuthStateChanged est une méthode de firebase qui surveille chaque changement d'authentification
 	// onAuthStateChanged regarde dans auth si un utilisateur est présent
@@ -60,14 +63,15 @@ function App() {
 			</div>
 			<div className="posts-container">
 				{/* Si il y a un élement dans posts, alors ils s'affichent */}
-				{posts.length > 0 &&
-					posts
-            // trie de la date la plus grande(recente) à la plus petite(ancienne)
-            .sort((a,b) => b.date - a.date)
+				{posts &&
+        // ... permet de déstructurer posts et jouer le map, sans ça l'application crash
+					[...posts]
+						// trie de la date la plus grande(recente) à la plus petite(ancienne)
+						.sort((a, b) => b.date - a.date)
 						// map de posts pour envoyer la data à Post
-            // post est le tableau de data
-            // user est l'utilisateur connecté, il sert à verifier si l'autheur du post est connecté
-            // si oui il peux modifier ses messages
+						// post est le tableau de data
+						// user est l'utilisateur connecté, il sert à verifier si l'autheur du post est connecté
+						// si oui il peux modifier ses messages
 						.map(post => <Post post={post} key={post.id} user={user} />)}
 			</div>
 		</div>

@@ -1,9 +1,13 @@
 import React, { useRef } from 'react';
 import { addDoc, collection } from "firebase/firestore";
 import { db } from '../utils/firebase.config';
+import { useDispatch } from 'react-redux';
+import { addPost } from '../feature/post.slice';
 
 const CreatePost = ({ uid, displayName }) => {
   const message = useRef();
+  // useDispatch déclenche l'action, la logique du reducer
+  const dispatch = useDispatch();
 
   const handlePost = async (e) => {
     e.preventDefault();
@@ -22,8 +26,12 @@ const CreatePost = ({ uid, displayName }) => {
     // db est le nom de la db que firebase doit aller chercher
     // posts est le nom de la collection à choisir
     // data est ce qui sera envoyé dans la db
-    await addDoc(collection(db, "posts"), data);
-    message.current.value = '';
+    await addDoc(collection(db, "posts"), data).then(() => {
+      // then récupère les informations et envoie ça dans le store avec dispatch et addPost
+      // il prend en paramètre data qui sera le payload
+      dispatch(addPost(data));
+      message.current.value = '';
+    });
   };
 
   return (
