@@ -50,8 +50,6 @@ const CommentPost = ({ post, user }) => {
     });
   };
 
-  // REPRENDRE LA VIDEO A 55:44
-
   return (
     <div className="comment-container">
       <h5 className="comment-title">Commentaires</h5>
