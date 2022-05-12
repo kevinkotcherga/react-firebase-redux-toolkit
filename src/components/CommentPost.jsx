@@ -2,9 +2,12 @@ import React, { useRef } from 'react';
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from '../utils/firebase.config';
 import CommentCard from './CommentCard';
+import { useDispatch } from 'react-redux';
+import { addComment } from '../feature/post.slice';
 
 const CommentPost = ({ post, user }) => {
   const answerContent = useRef();
+  const dispatch = useDispatch();
 
   const handleComment = (e) => {
     e.preventDefault();
@@ -37,8 +40,14 @@ const CommentPost = ({ post, user }) => {
     // posts est le nom de la collection à choisir
     // post.id est le post à éditer
     // comments: data ici c'est comments qui prendra la valeur de data dans la db
-    updateDoc(doc(db, 'posts', post.id), { comments: data });
-    answerContent.current.value = '';
+    updateDoc(doc(db, 'posts', post.id), { comments: data }).then(() => {
+      // addComment ne prend en compte qu'un élément
+      // C'est donc stocké dans un tableau
+      // On pourra chosir dedans avec [0], [1], etc..
+      dispatch(addComment([post.id, data]))
+      // dispatch envera l'id du post à éditer et la data du message (commentaire) à envoyer
+      answerContent.current.value = '';
+    });
   };
 
   // REPRENDRE LA VIDEO A 55:44

@@ -1,8 +1,8 @@
 import React, { useRef } from 'react';
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs } from "firebase/firestore";
 import { db } from '../utils/firebase.config';
 import { useDispatch } from 'react-redux';
-import { addPost } from '../feature/post.slice';
+import { addPost, getPosts } from '../feature/post.slice';
 
 const CreatePost = ({ uid, displayName }) => {
   const message = useRef();
@@ -30,6 +30,10 @@ const CreatePost = ({ uid, displayName }) => {
       // then récupère les informations et envoie ça dans le store avec dispatch et addPost
       // il prend en paramètre data qui sera le payload
       dispatch(addPost(data));
+      // getPosts et appellé après le create pour récupérer la base de donnée et l'id instantanément pour pouvoir éditer si on veux apres avoir créer le message
+      getDocs(collection(db, 'posts')).then(res =>
+			dispatch(getPosts(res.docs.map(doc => ({ ...doc.data(), id: doc.id })))),
+		);
       message.current.value = '';
     });
   };
